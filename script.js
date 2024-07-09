@@ -3,10 +3,11 @@ const result = document.getElementById("result");
 const sound = document.getElementById("sound");
 
 const btn = document.getElementById("search-btn");
+const inpWord = document.getElementById("inp-word");
 
-btn.addEventListener("click", async () => {
-    let inpWord = document.getElementById("inp-word").value;
-    fetch(`${url}${inpWord}`).then((response) => response.json()).then((data) => {
+const searchWord = async () => {
+    let word = inpWord.value;
+    fetch(`${url}${word}`).then((response) => response.json()).then((data) => {
         console.log(data);
         if (data && data.length > 0) {
             let wordData = data[0];
@@ -14,7 +15,7 @@ btn.addEventListener("click", async () => {
             let phonetics = wordData.phonetics[0];
             
             result.innerHTML = `<div class="word">
-                    <h3>${inpWord}</h3>
+                    <h3>${word}</h3>
                     <button id="sound-btn">
                         <i class="fa-solid fa-volume-high"></i>
                     </button>
@@ -31,10 +32,18 @@ btn.addEventListener("click", async () => {
                 sound.play();
             });
         } else {
-            result.innerHTML = `<p>No results found for "${inpWord}". Please try another word.</p>`;
+            result.innerHTML = `<p>No results found for "${word}". Please try another word.</p>`;
         }
     }).catch((error) => {
         console.error('Error:', error);
         result.innerHTML = `<p>Error retrieving the word. Please try again later.</p>`;
     });
+};
+
+btn.addEventListener("click", searchWord);
+
+inpWord.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+        searchWord();
+    }
 });
